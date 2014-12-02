@@ -90,7 +90,8 @@ An integer partition, $\lambda$, can be represented visually as a \emph{Ferrers 
 
 A \emph{tableau} is a Ferrers diagram in which each box has been assigned a value. We refer to the value of tableau $T$ at coordinate $(i,j)$ by writing $T_{ij}$. In our context, a tableau will contained no repeated values and all values,$V \in T_ij$ satisfy $1 \leq v \leq n$. For instance, a tableau with shape $\lambda = \{3,2\}$ will have $n = 5$ and therefore only contain the values 1,2,3,4,and 5.
 
-\begin{figure}\label{fig:Tableau}
+\begin{figure}
+\label{fig:Tableau}
 \centering
 \[ \tableau{{3}&{21}&{7}&{20}&{8}&{18}&{19}&{9}&{10}\\
 {11}&{1}&{13}&{15}&{16}&{17}&{22}\\
@@ -100,11 +101,13 @@ A \emph{tableau} is a Ferrers diagram in which each box has been assigned a valu
 \caption{A tableau for the partition $\lambda = \{9,7,3,2,1\}$}
 \end{figure}
 
-\begin{definition}\label{def:StandardTableau}
+\begin{definition}
+\label{def:StandardTableau}
 A tableau is a \emph{standard tableau} if its cell values are strictly increasing on all rows when read from left to right and on all columns when read  from top to bottom. Figure \ref{fig:StandardTableau} shows a tableau which is standard and figure \ref{fig:Tableau} shows a tableau which is not.
 \end{definition}
 
-\begin{figure}\label{fig:StandardTableau}
+\begin{figure}
+\label{fig:StandardTableau}
 \centering
 \begin{tabular}{c c c c c}
 $\tableau{{1}&{3}&{5}\\{2}&{4}}$ & 
@@ -118,7 +121,8 @@ $\tableau{{1}&{2}&{3}\\{4}&{5}}$
 
 A tableau is said to be \emph{ordered to} coordinates $(i,j)$ if definition \ref{def:StandardTableau} holds for the cells below, to the right of, or indexed by $(i,j)$.
 
-\begin{figure}\label{fig:OrderedTo}
+\begin{figure}
+\label{fig:OrderedTo}
 \centering
 \[ \tableau{{}&{}&{}&{}&{}&{}&{}&{}&{}\\
 {}&{1}&{13}&{15}&{16}&{17}&{22}\\
@@ -166,10 +170,10 @@ Both of these algorithms are composed of three sub-algorithms: algorithm II-I wr
 
 \subsection{Algorithm II-I}
 \subsubsection{AlgorithmP}
-Algorithm P accepts a tableau and a member element as input and produces a tableau which is \emph{closer} to, or at least not farther from, standard form.
+Algorithm P accepts a tableau and a member element as input and produces a tableau which is \emph{closer} to, or at least not farther from, standard form. Specifically, it is the repeated application of forward Jeu de Taquin to the same value until no candidates remain.\\
 \begin{algorithm}[H]
 \SetAlgoLongEnd
- \KwIn{a pair $(A,a)$ where $A$ is a tableau and $a \in \mathbb{Z}^+ \leq n$}
+\KwIn{a pair $(A,a)$ where $A$ is a tableau and $a \in \{1,2,\ldots,n\}$}.
  \KwOut{A tableau}
  \Begin{
  $(i0,j0) \gets$ the position of $a$ in $A$\;
@@ -181,12 +185,13 @@ Algorithm P accepts a tableau and a member element as input and produces a table
     }{\Return{A}}
 }
 \end{algorithm}
-\begin{figure}\label{fig:AlgorithmPOutput}
+\begin{figure}
+\label{fig:AlgorithmPOutput}
 \centering
-\begin{tabular}{l@{\hskip 1cm}c}
-$A_0 = A =$ & $\tableau{{\textbf{5}}&{1}\\{3}&{2}\\{4}}$ \\[1cm]
-$A_1 =$ AlgorithmP$(A_0,5) =$ & $\tableau{{1}&{\textbf{5}}\\{3}&{2}\\{4}}$ \\[1cm]
-$A_2 =$ AlgorithmP$(A_1,5) =$ & $\tableau{{1}&{2}\\{3}&{\textbf{5}}\\{4}}$ \\[1cm]
+\begin{tabular}{c@{\hskip 1cm}c@{\hskip 1cm}c}
+    $\tableau{{\textbf{5}}&{1}\\{3}&{2}\\{4}}$ & 
+    $\tableau{{1}&{\textbf{5}}\\{3}&{2}\\{4}}$ & 
+    $\tableau{{1}&{2}\\{3}&{\textbf{5}}\\{4}}$
 \end{tabular}
 \caption{Algorithm P applied to cell $a = 5$}
 \end{figure}
@@ -195,7 +200,10 @@ Algorithm 1 accepts a tableau, a hook function, and coordinates as input. It the
 
 For a given tableau shape $\lambda$, we define the successor to a coordinate $(i,j)$ as $s(i,j)$ where $(i,j) \neq (1,1)$ and $(i,j) \in \lambda$ as the coordinate of the next entry in the \emph{successor map}, $s$, of $\lambda$. To find $s(i,j)$, first look to the cell directly above $(i,j)$. If this cell exists, then it is the successor. Otherwise, choose the bottom-most cell of the column to the left of $(i,j)$. The concept of a successor map is important because algorithm 2 uses the output coordinates from 1 as the input coordinates for the next call to 1.
 
-\begin{figure}\label{fig:SuccessorMap}
+Algorithm 1 calls Algorithm P across all coordinates in the tableau in the order in which they appear in the successor map. If the call to algorithm P results in a modification to the tableau, the hook function is updated to record information the slide. In other words, the hook function serves as a manner in which to record how the tableau was changed.
+
+\begin{figure}
+\label{fig:SuccessorMap}
 \centering
 \[ \tableau{
 {22}&{17}&{13}&{10}&{8}&{6}&{4}&{2}&{1}\\
@@ -225,7 +233,8 @@ For a given tableau shape $\lambda$, we define the successor to a coordinate $(i
  \Return{$(B,g,(i_1,j_1)$}
  }
 \end{algorithm}
-\begin{figure}\label{fig:Algorithm1Output}
+\begin{figure}
+\label{fig:Algorithm1Output}
 \centering
 
 \begin{tabular}{c c c c c c c}
@@ -247,7 +256,7 @@ $\tableau{{0}&{-2}\\{0}&{0}\\{1}&{0}}$
 \caption{Some algorithm 1 output.}
 \end{figure}
 \subsubsection{Algorithm2}
-Algorithm 2 consists of the initial and halting conditions required to call algorithm 1 appropriately across the tableau. Algorithms 1 and P actually do the work, algorithm 2 is really just a nest-while algorithm 1 call across the successor map. For example, the first tableau and the last tableau-hook pair in figure \ref{fig:Algorithm1Output} are input and output values for algorithm 2.\\
+Algorithm 2 is the "main" algorithm mapping elements of $II$ to elements of $I$. Algorithms 1 and P actually do the work, Algorithm 2 just calls Algorithm 1 across the coordinates of the successor map. For example, the first tableau and the last tableau-hook pair in figure \ref{fig:Algorithm1Output} are input and output values for algorithm 2.\\
 
 \begin{algorithm}[H]
 \SetAlgoLongEnd
@@ -262,12 +271,22 @@ Algorithm 2 consists of the initial and halting conditions required to call algo
 \end{algorithm}
 \subsection{Algorithm I-II}
 \subsubsection{AlgorithmP'}
-Algorithm P' works analogously to algorithm P, but in reverse. It uses information encoded in the hook function provided as input to return output closer to the original element of II.\\
+Algorithm P' works analogously to algorithm P, but in reverse. It uses information encoded in the hook function provided as input to return output closer to the original element of II. In other words, Algorithm P' performs reverse Jeu de Taquin on $P$.\\
 \begin{algorithm}[H]
- \KwIn{a triple $(T,a',(i'_0,j'_0))$ where $T$ is a tableau, $a' \in \mathbb{Z}^+ \leq n$, and $(i'_0,j'_0)$ is a cell in $T$.}
+\SetAlgoLongEnd
+\KwIn{a triple $(T,a',(i'_0,j'_0))$ where $T$ is a tableau, $a' \in \{1,2,\ldots, n\}$, and $(i'_0,j'_0)$ is a cell in $T$.}
  \KwOut{A tableau}
+ \Begin{
+  $(i'_1,j'_1) \gets$ the position of $a'$ in $T$\;
+  \eIf{$(i'_1,j'_1) \geq (i'_0,j'_0)$}{\Return{T}}{
+  $b' \gets T(i'_1,j'_1 - 1)$ if $j'_1 > j'_0$ else 0\;
+  $c' \gets T(i'_1 - 1,j'_1)$ if $i'_1 > i'_0$ else 0\;
+  $U \gets T$ with $a'$ swapped with the greatest of $b'$ and $c'$.\;
+  \Return{AlgorithmP'(U)}
+  }}
 \end{algorithm}
-\begin{figure}\label{fig:AlgorithmPPrimeOutput}
+\begin{figure}
+\label{fig:AlgorithmPPrimeOutput}
 \centering
 
 \begin{tabular}{c c c c}
@@ -280,7 +299,7 @@ $\tableau{{2}&{\textbf{8}}&{1}\\{4}&{3}&{6}\\{9}&{5}&{7}}$
 \end{figure}
 
 \subsubsection{Algorithm1'}
-To define algorithm 1', we will first need a manner in which to "track" the movement of a cell value across the tableau during the recursive P' calls. To this end, we will define the \emph{direction} the cell value moves as $N$ if it exchanges position with the value directly above it, $W$ if it exchanges position with the value directly to the left of it, and $\emptyset$ if it does not move. We define the concatenation of all of these letters as the cell's \emph{path}, and it is read from \textbf{right to left}.  
+To define algorithm 1', we will first need a manner in which to track the movement of a cell value across the tableau during the recursive P' calls. To this end, we will define the \emph{direction} the cell value moves as $N$ if it exchanges position with the value directly above it, $W$ if it exchanges position with the value directly to the left of it, and $\emptyset$ if it does not move. We define the concatenation of all of these letters as the cell's \emph{path}, and it is read from \textbf{right to left}.  
 For example, the directions of the movement of cell value 8 in figure \ref{fig:AlgorithmPPrimeOutput} is $N N W$, so the value's path is $W N N$. These paths are ordered lexicographically such that $N < \emptyset < W$. The \emph{maximum candidate element} is the cell appearing first in the lexicographical ordering of the paths of all \emph{candidates elements} in the tableau. 
 Finally, the set of \emph{candidate elements} associated with $(U,g',(i'_1,j'_1)$ are all cells with $(i,j)$ coordinates satisfying the conditions $i \geq i'_1$, $g'(i,j'_1) \ge 0$, and $j = j'_1 + g'(i,j'_1)$.
 \begin{algorithm}[H]
@@ -300,11 +319,9 @@ Finally, the set of \emph{candidate elements} associated with $(U,g',(i'_1,j'_1)
  Return{$(U,f',s^{-1}(i'_0,j'_0))$}
  }
 \end{algorithm}
-\begin{figure}\label{fig:Algorithm1PrimeOutput}
-\centering
-\caption{Some algorithm 1' output.}
-\end{figure}
 \subsubsection{Algorithm2'}
+Algorithm 2' works across the successor map analagously to Algorithm 2, but in the reverse order. It calls Algorithm 1' at each location of the successor map and "rewinds" the hook function as it is interpreted. 
+
 \begin{algorithm}[H]
  \KwIn{$(T,g') \in I$}
  \KwOut{$T \in II$}
@@ -313,19 +330,37 @@ Finally, the set of \emph{candidate elements} associated with $(U,g',(i'_1,j'_1)
  \While{$(i'_0,j'_0) \neq $ the least cell in $T$}{$(T,g',(i'_0,j'_0)) \gets$ Algorithm1'$(T,g',(i'_0,j'_0))$\;}
  Return{$(T,g',(i'_0,j'_0))$}
  }
- 
 \end{algorithm}
-\begin{figure}\label{fig:Algorithm2PrimeOutput}
-\centering
-\caption{Some algorithm 2' output.}
-\end{figure}
-\todo{some $I$s map to the same std tableau, but the actual $II$ element differs b/c of the hook}
+
+\subsection{Remarks}
+To establish their bijection, the authors needed to prove that the two main algorithms (2 and 2') are inverses of each other. Because both of them are actually just Algorithm 1 and 1' calls with initial and halting conditions, the authors assert that proving 1 and 1' are inverses is sufficient. Although algorithms 1 and 1' both accept the same type of input, they do not function as inverses across all possible input values. The authors note this and proceed to define a "correct" set $C$ of input values for which 1 and 1' are inverses.
+
+\begin{equation*}
+\begin{split}
+    C &\ni (A,f,(i_0,j_0)): \\
+      & (i_0,j_0) \text{ are coordinates in } \lambda \\
+      & A \text{ is ordered to} (i_0,j_0) \\
+      & f(i > i_0,j > j_0) \equiv 0 \\
+      & p \text{ moves to } (i_0,j_0) \text{ after calling AlgorithmP' for any } p \in \text{ candidates}
+\end{split}
+\end{equation*}
+
+They then show that for any element of $C$ provided as input to algorithms 1 or 1', an element of $C$ is produced as output. Therefore, algorithms 1 and 1' stabilize $C$ and the bijection holds. It is interesting to note that often some elements of $II$ will map to the same standard tableau. However, they will not actually map to the same elements of $I$ because the slides required to get the elements of $I$ into standard form will not be the same and the hook function will reflect this.
+
+
 \section{A probabilistic proof}
 Greene, Nijenhuis, and Wilf take a different approach to prove the formula's validity. By calculating all possible standard tableaux of a given shape probabilistically, they show that the formula must be valid because the probabilities of generating each standard filling sum to one. 
 
-The definition of a \emph{corner cell} is central to this proof. A corner cell of a Ferrers diagram is a cell that is located both at the end of a row and the end of a column. 
+The definition of a \emph{corner cell} is central to this proof. A corner cell of a Ferrers diagram is a cell that is located both at the end of a row and the end of a column. The authors propose a manner in which to obtain random corner cells. First, randomly choose cell in $(a,b)$ in $\lambda$. If the cell is not a corner cell, make another random selection from the cell's hook and repeat the process until you reach a corner cell $(\alpha,\beta)$. We call this cell the \emph{terminal} cell of the trial and we denote the probability of landing on $(\alpha,\beta)$ as $p(\alpha\beta)$. 
+Figure \ref{fig:ProbContruction} shows how we can create random standard fillings of $\lambda$ by filling random corner cells of the empty portion of a tableau with $n$.
 
-\begin{figure}\label{fig:CornerCells}
+We denote the path during a trial as $P: (a_1,b_1) \to (a_2,b_2) \to \ldots \to (\alpha,\beta)$. Vertical and horizontal projections of $P$ are defined as $A = (a_1,a_2,...,\alpha)$ and $B = (b_1,b_2,...,\beta)$. The authors proceed to show that $p(\alpha\beta) = \frac{1}{n} \sum{p(A,B | a,b)}$ where $p(A,B | a,b)$ is the probability that a random trial with initial coordinates $(a,b)$ follows the path given by the projections $A$ and $B$. When evaluated across sequentially removed corner cells (asterisks in figure \ref{fig:ProbContruction}), the authors show that the probabilities sum to one.
+
+
+%= \frac{1}{h_{\alpha\beta} - 1} ((h_{a\beta} - 1) + (h_{\alpha b} -1))$.
+
+\begin{figure}
+\label{fig:CornerCells}
 \centering
 \[ \tableau{{}&{}&{}&{}&{}&{}&{}&{}&{*}\\
 {}&{}&{}&{}&{}&{}&{}\\
@@ -335,24 +370,21 @@ The definition of a \emph{corner cell} is central to this proof. A corner cell o
 \caption{Corner cells for $\lambda = (9,7,7,3,1)$}
 \end{figure}
 
-A random corner cell of a Ferrers diagram, $\lambda$, can be obtained via the following algorithm.\\
-\begin{algorithm}[H]
-\KwIn{$(\lambda,(i,j))$, a pair consisting of a Ferrers diagram shape and a random coordinate within the shape.}
-\KwOut{$(\alpha,\beta)$, the coordinates of a corner cell of $\lambda$.}
-\Begin{
-$(i',j') \gets$ Random element of $H_{ij} \setminus (i,j)$\;
- \If{$(i',j')$ is not a corner of $\lambda$}{start over with $(\lambda,i',j')$\;}
- \Return{$(i',j')$}
- }
-\end{algorithm}
 
-Now that we have a method to randomly obtain corner cells of a diagram shape, we can proceed to obtaining random standard fillings of a diagram shape via the following algorithm. 
-\todo{no pseudocode, just verbally describe and reuse figs from poster}
-
-
-\todo{move greene before jeu de taquin}
-
-\todo{conclusion like notes from meething}
+\begin{figure}
+\label{fig:ProbContruction}
+\begin{tabular}{c@{\hskip 1cm}c@{\hskip 1cm}c@{\hskip 1cm}c@{\hskip 1cm}c}
+$n=5$ & $n=4$ & $n=3$ & $n=2$ & $n=1$ \\
+\small$\tableau{{}&{}&{*}\\{}&{*}}$    &
+\small$\tableau{{}&{*}&{5}\\{}&{*}}$   &
+\small$\tableau{{}&{*}&{5}\\{*}&{4}}$  &
+\small$\tableau{{}&{*}&{5}\\{3}&{4}}$  &
+\small$\tableau{{*}&{2}&{5}\\{3}&{4}}$ \\[1cm]
+\end{tabular}
+\caption{The construction of a standard tableau. Asterisks denote corner cells.}
+\end{figure}
+\section{Conclusion}
+Greene's probabilistic proof was completed soon after the discovery of the formula, but the direct bijective proof of Novelli, Pak and Stoyanovskii was not obtained until many years later. We can see that proofs of this formula often require both ingenuity and creativity, which may explain why different authors have chosen different tools to utilize in their proofs. In combinatorics, counting partitions is often very difficult. Perhaps this is why proofs of the hook length formula have historically proven to be elusive.
 
 \bibliographystyle{plain}
 \bibliography{references}
